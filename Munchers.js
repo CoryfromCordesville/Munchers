@@ -2,10 +2,13 @@ const gameBoard = document.getElementById('game-board');
 const scoreDisplay = document.getElementById('score');
 const levelDisplay = document.getElementById('level');
 const gameOverDisplay = document.getElementById('game-over');
+const timerDisplay = document.getElementById('timer');
+const livesDisplay = document.getElementById('lives');
 
 let score = 0;
 let level = 1;
 let lives = 3;
+let timer = 60; // in seconds
 let gameRunning = true;
 
 const muncher = {
@@ -20,6 +23,7 @@ function createSquare(number, row, col, type) {
   square.dataset.row = row;
   square.dataset.col = col;
   square.dataset.type = type;
+  square.dataset.multiple = number % 2 === 0; // true if the number is a multiple of 2
   square.addEventListener('click', () => {
     munchSquare(square);
   });
@@ -31,6 +35,7 @@ function munchSquare(square) {
 
   const number = parseInt(square.textContent);
   const type = square.dataset.type;
+  const isMultiple = square.dataset.multiple === 'true';
 
   if (type === 'enemy') {
     // Game over logic
@@ -41,14 +46,20 @@ function munchSquare(square) {
     return;
   }
 
-  // Update score and level
-  score += number;
-  scoreDisplay.textContent = `Score: ${score}`;
-  level++;
-  levelDisplay.textContent = `Level: ${level}`;
+  // Only update score and level if the number is a multiple
+  if (isMultiple) {
+    score += number;
+    updateScoreAndLevel();
+  }
 
   // Remove the square from the game board
   square.remove();
+}
+
+function updateScoreAndLevel() {
+  scoreDisplay.textContent = `Score: ${score}`;
+  level++;
+  levelDisplay.textContent = `Level: ${level}`;
 }
 
 function moveMuncher(direction) {
@@ -92,23 +103,6 @@ function updateMuncherPosition() {
   muncherElement.style.gridColumn = muncher.col + 1;
 }
 
-function generateGameBoard() {
-  gameBoard.innerHTML = '';
-  for (let i = 1; i <= 25; i++) {
-    const row = Math.floor((i - 1) / 5);
-    const col = (i - 1) % 5;
-    const type = getRandomSquareType();
-    const square = createSquare(i, row, col, type);
-    gameBoard.appendChild(square);
-  }
-
-  const muncherElement = document.createElement('div');
-  muncherElement.className = 'muncher';
-  gameBoard.appendChild(muncherElement);
-
-  updateMuncherPosition();
-}
-
 function getRandomSquareType() {
   const types = ['number', 'power-up', 'enemy'];
   const randomIndex = Math.floor(Math.random() * types.length);
@@ -120,25 +114,72 @@ function endGame() {
   gameOverDisplay.textContent = 'Game Over';
 }
 
-generateGameBoard();
+function generateGameBoard() {
+  gameBoard.innerHTML = '';
 
-document.addEventListener('keydown', function (event) {
+  for (let i = 1; i <= 24; i++) {
+    const row = Math.floor((i - 1) / 5);
+    const col = (i - 1) % 5;
+    const type = getRandomSquareType();
+    const square = createSquare(i, row, col, type);
+    gameBoard.appendChild(square);
+  }
+
+  const muncherElement = document.createElement('div');
+  muncherElement.className = 'muncher';
+
+  const muncherImage = document.createElement('img');
+  muncherImage.src = 'green-muncher.png'; // Update this path accordingly
+  muncherElement.appendChild(muncherImage);
+
+  gameBoard.appendChild(muncherElement);
+
+  updateMuncherPosition();
+}
+
+function handleKeyDown(event) {
   if (!gameRunning) return;
 
   switch (event.key) {
     case 'ArrowUp':
-      moveMuncher('up');
-      break;
     case 'ArrowDown':
-      moveMuncher('down');
-      break;
     case 'ArrowLeft':
-      moveMuncher('left');
-      break;
     case 'ArrowRight':
-      moveMuncher('right');
+      moveMuncher(event.key.replace('Arrow', '').toLowerCase());
       break;
     default:
       break;
   }
-});
+}
+
+function updateTimerDisplay() {
+  timerDisplay.textContent = `Time: ${timer} seconds`;
+}
+
+function updateLivesDisplay() {
+  livesDisplay.textContent = `Lives: ${lives}`;
+}
+
+function initGame() {
+  updateScoreAndLevel();
+  updateTimerDisplay();
+  updateLivesDisplay();
+  startTimer();
+}
+
+function startTimer() {
+  const interval = setInterval(() => {
+    timer--;
+    updateTimerDisplay();
+
+    if (timer === 0) {
+      clearInterval(interval);
+      endGame();
+    }
+  }, 1000);
+}
+
+document.addEventListener('keydown', handleKeyDown);
+
+generateGameBoard();
+initGame();
