@@ -7,35 +7,25 @@
     <link rel="stylesheet" href="Munchers.css">
 </head>
 <body>
-    <header>
-        <h1 class="game-title">Number Munchers</h1>
-    </header>
-
-    <main>
-        <div class="game-container">
-            <div class="game-board" id="game-board"></div>
-
-            <div class="muncher-container">
-                <pre class="muncher" id="muncher">
-  .--.
- |o_o |
- |:_/ |
-
-                </pre>
+    <div class="game-wrapper">
+        <!-- Game Header -->
+        <header class="game-header">
+            <div>Level: <span id="level">1</span></div>
+            <div>Multiples of 2</div>
+        </header>
+        
+        <!-- Game Board -->
+        <main class="game-container">
+            <div class="game-board" id="game-board">
+                <!-- Dynamic grid elements will be inserted here -->
             </div>
-        </div>
+        </main>
 
-        <div class="score-box">
-            <div class="score-indicator">
-                <span>Score:</span>
-            </div>
-            <div class="score-display" id="score">0</div>
-        </div>
-
-        <div class="level-title">
-            <h2>Level 1</h2>
-        </div>
-    </main>
+        <!-- Game Footer -->
+        <footer class="game-footer">
+            Score: <span id="score">30</span>
+        </footer>
+    </div>
 
     <script src="Munchers.js"></script>
 </body>
