@@ -1,185 +1,252 @@
 const gameBoard = document.getElementById('game-board');
 const scoreDisplay = document.getElementById('score');
 const levelDisplay = document.getElementById('level');
-const gameOverDisplay = document.getElementById('game-over');
-const timerDisplay = document.getElementById('timer');
 const livesDisplay = document.getElementById('lives');
+const goalDisplay = document.getElementById('goal');
 
-let score = 0;
-let level = 1;
-let lives = 3;
-let timer = 60; // in seconds
-let gameRunning = true;
-
-const muncher = {
-  row: 2,
-  col: 2,
+// Game state initialization
+let gameState = {
+  score: 0,
+  level: 1,
+  lives: 3,
+  currentGoal: 2,
+  gameRunning: true,
+  muncherPosition: { row: 0, col: 0 },
+  wrongAttempts: 0,
+  enemies: []
 };
 
-function createSquare(number, row, col, type) {
+// Reset game state
+function resetGameState() {
+  gameState = {
+    score: 0,
+    level: 1,
+    lives: 3,
+    currentGoal: 2,
+    gameRunning: true,
+    muncherPosition: { row: 0, col: 0 },
+    wrongAttempts: 0,
+    enemies: []
+  };
+}
+
+// Create a square
+function createSquare(row, col, number, isCorrect) {
   const square = document.createElement('div');
   square.classList.add('square');
   square.textContent = number;
   square.dataset.row = row;
   square.dataset.col = col;
-  square.dataset.type = type;
-  square.dataset.multiple = number % 2 === 0; // true if the number is a multiple of 2
-  square.addEventListener('click', () => {
-    munchSquare(square);
-  });
+  square.dataset.correct = isCorrect;
+
   return square;
 }
 
-function munchSquare(square) {
-  if (!gameRunning) return;
-
-  const number = parseInt(square.textContent);
-  const type = square.dataset.type;
-  const isMultiple = square.dataset.multiple === 'true';
-
-  if (type === 'enemy') {
-    // Game over logic
-    lives--;
-    if (lives === 0) {
-      endGame();
+// Update board generation
+function generateBoard() {
+  gameBoard.innerHTML = '';
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 5; col++) {
+      const number = Math.floor(Math.random() * 50) + 1;
+      const isCorrect = number % gameState.currentGoal === 0;
+      const square = createSquare(row, col, number, isCorrect);
+      gameBoard.appendChild(square);
     }
+  }
+}
+
+// Spawn the muncher
+function spawnMuncher() {
+  const muncher = document.createElement('div');
+  muncher.id = 'muncher';
+  muncher.classList.add('muncher');
+  const startSquare = document.querySelector(
+    `.square[data-row="${gameState.muncherPosition.row}"][data-col="${gameState.muncherPosition.col}"]`
+  );
+  if (startSquare) startSquare.appendChild(muncher);
+}
+
+// Move the muncher
+function moveMuncher(oldRow, oldCol, newRow, newCol) {
+  const muncher = document.getElementById('muncher');
+  const targetSquare = document.querySelector(
+    `.square[data-row="${newRow}"][data-col="${newCol}"]`
+  );
+
+  if (!targetSquare) return;
+
+  // Keep muncher element when moving
+  const currentSquare = document.querySelector(
+    `.square[data-row="${oldRow}"][data-col="${oldCol}"]`
+  );
+  
+  if (currentSquare) {
+    const number = currentSquare.textContent;
+    currentSquare.innerHTML = number;  // Preserve number, remove muncher
+  }
+  
+  const targetNumber = targetSquare.textContent;
+  targetSquare.innerHTML = targetNumber;  // Preserve number
+  targetSquare.appendChild(muncher);  // Add muncher while keeping number
+
+  gameState.muncherPosition = { row: newRow, col: newCol };
+}
+
+// Check answer
+function checkAnswer() {
+  const currentSquare = document.querySelector(
+    `.square[data-row="${gameState.muncherPosition.row}"][data-col="${gameState.muncherPosition.col}"]`
+  );
+
+  if (currentSquare.dataset.correct === 'true') {
+    gameState.score += 10;
+    gameState.wrongAttempts = 0;
+    updateScore();
+    const muncher = document.getElementById('muncher');
+    currentSquare.innerHTML = '';  // Clear number
+    currentSquare.appendChild(muncher);  // Keep muncher
+  } else {
+    gameState.wrongAttempts++;
+    if (gameState.wrongAttempts >= 3) {
+      gameState.lives--;
+      gameState.wrongAttempts = 0;
+      updateLives();
+      if (gameState.lives <= 0) endGame();
+    }
+  }
+}
+
+// Update score
+function updateScore() {
+  scoreDisplay.textContent = gameState.score;
+}
+
+// Update lives
+function updateLives() {
+  livesDisplay.textContent = gameState.lives;
+  if (gameState.lives <= 0) endGame();
+}
+
+// End the game
+function endGame() {
+  alert(`Game Over! Your final score is ${gameState.score}.`);
+  gameState.gameRunning = false;
+}
+
+// Spawn toggles (enemies)
+function spawnToggles() {
+  const toggleCount = 3; // Number of toggles to spawn
+  for (let i = 0; i < toggleCount; i++) {
+    const toggle = document.createElement('div');
+    toggle.classList.add('toggle');
+    const row = Math.floor(Math.random() * 5);
+    const col = Math.floor(Math.random() * 5);
+    toggle.dataset.row = row;
+    toggle.dataset.col = col;
+    gameState.enemies.push({ row, col });
+    const square = document.querySelector(`.square[data-row="${row}"][data-col="${col}"]`);
+    if (square) square.appendChild(toggle);
+  }
+}
+
+// Move toggles randomly
+function moveToggles() {
+  gameState.enemies.forEach((enemy, index) => {
+    const oldRow = enemy.row;
+    const oldCol = enemy.col;
+    let newRow = oldRow;
+    let newCol = oldCol;
+    const direction = Math.floor(Math.random() * 4);
+    switch (direction) {
+      case 0: if (newRow > 0) newRow--; break; // Up
+      case 1: if (newRow < 4) newRow++; break; // Down
+      case 2: if (newCol > 0) newCol--; break; // Left
+      case 3: if (newCol < 4) newCol++; break; // Right
+    }
+    const targetSquare = document.querySelector(`.square[data-row="${newRow}"][data-col="${newCol}"]`);
+    if (targetSquare && !targetSquare.querySelector('.toggle')) {
+      const toggle = document.querySelector(`.toggle[data-row="${oldRow}"][data-col="${oldCol}"]`);
+      if (toggle) {
+        toggle.dataset.row = newRow;
+        toggle.dataset.col = newCol;
+        targetSquare.appendChild(toggle);
+        gameState.enemies[index] = { row: newRow, col: newCol };
+      }
+    }
+  });
+}
+
+// Check if muncher collides with a toggle
+function checkCollision() {
+  const muncher = document.getElementById('muncher');
+  const muncherRow = gameState.muncherPosition.row;
+  const muncherCol = gameState.muncherPosition.col;
+  const toggle = document.querySelector(`.toggle[data-row="${muncherRow}"][data-col="${muncherCol}"]`);
+  if (toggle) {
+    gameState.lives--;
+    updateLives();
+    if (gameState.lives <= 0) endGame();
+  }
+}
+
+// Update game loop to include toggle movement and collision check
+function gameLoop() {
+  if (!gameState.gameRunning) return;
+  moveToggles();
+  checkCollision();
+  setTimeout(gameLoop, 1000); // Adjust the interval as needed
+}
+
+// Movement handler
+document.addEventListener('keydown', (e) => {
+  if (!gameState.gameRunning) {
+    console.log('Game not running');
     return;
   }
 
-  // Only update score and level if the number is a multiple
-  if (isMultiple) {
-    score += number;
-    updateScoreAndLevel();
+  const oldPosition = {...gameState.muncherPosition};
+  
+  if (e.code === 'Space') {
+    checkAnswer();
+    return;
   }
 
-  // Remove the square from the game board
-  square.remove();
-}
-
-function updateScoreAndLevel() {
-  scoreDisplay.textContent = `Score: ${score}`;
-  level++;
-  levelDisplay.textContent = `Level: ${level}`;
-}
-
-function moveMuncher(direction) {
-  if (!gameRunning) return;
-
-  const newMuncherPosition = { ...muncher };
-
-  switch (direction) {
-    case 'up':
-      if (newMuncherPosition.row > 0) {
-        newMuncherPosition.row--;
-      }
-      break;
-    case 'down':
-      if (newMuncherPosition.row < 4) {
-        newMuncherPosition.row++;
-      }
-      break;
-    case 'left':
-      if (newMuncherPosition.col > 0) {
-        newMuncherPosition.col--;
-      }
-      break;
-    case 'right':
-      if (newMuncherPosition.col < 4) {
-        newMuncherPosition.col++;
-      }
-      break;
-    default:
-      break;
-  }
-
-  muncher.row = newMuncherPosition.row;
-  muncher.col = newMuncherPosition.col;
-  updateMuncherPosition();
-}
-
-function updateMuncherPosition() {
-  const muncherElement = document.querySelector('.muncher');
-  muncherElement.style.gridRow = muncher.row + 1;
-  muncherElement.style.gridColumn = muncher.col + 1;
-}
-
-function getRandomSquareType() {
-  const types = ['number', 'power-up', 'enemy'];
-  const randomIndex = Math.floor(Math.random() * types.length);
-  return types[randomIndex];
-}
-
-function endGame() {
-  gameRunning = false;
-  gameOverDisplay.textContent = 'Game Over';
-}
-
-function generateGameBoard() {
-  gameBoard.innerHTML = '';
-
-  for (let i = 1; i <= 24; i++) {
-    const row = Math.floor((i - 1) / 5);
-    const col = (i - 1) % 5;
-    const type = getRandomSquareType();
-    const square = createSquare(i, row, col, type);
-    gameBoard.appendChild(square);
-  }
-
-  const muncherElement = document.createElement('div');
-  muncherElement.className = 'muncher';
-
-  const muncherImage = document.createElement('img');
-  muncherImage.src = 'green-muncher.png'; // Update this path accordingly
-  muncherElement.appendChild(muncherImage);
-
-  gameBoard.appendChild(muncherElement);
-
-  updateMuncherPosition();
-}
-
-function handleKeyDown(event) {
-  if (!gameRunning) return;
-
-  switch (event.key) {
+  switch(e.key) {
     case 'ArrowUp':
+      if (gameState.muncherPosition.row > 0) gameState.muncherPosition.row--;
+      break;
     case 'ArrowDown':
+      if (gameState.muncherPosition.row < 4) gameState.muncherPosition.row++;
+      break;
     case 'ArrowLeft':
+      if (gameState.muncherPosition.col > 0) gameState.muncherPosition.col--;
+      break;
     case 'ArrowRight':
-      moveMuncher(event.key.replace('Arrow', '').toLowerCase());
+      if (gameState.muncherPosition.col < 4) gameState.muncherPosition.col++;
       break;
     default:
-      break;
+      return;
   }
+
+  console.log(`Moving from (${oldPosition.row},${oldPosition.col}) to (${gameState.muncherPosition.row},${gameState.muncherPosition.col})`);
+  moveMuncher(oldPosition.row, oldPosition.col, gameState.muncherPosition.row, gameState.muncherPosition.col);
+});
+
+// Start game function
+function startGame() {
+  console.log('Starting game...');
+  resetGameState();
+  generateBoard();
+  spawnMuncher();
+  spawnToggles();
+  updateScore();
+  updateLives();
+  gameLoop();
+  console.log('Game started');
 }
 
-function updateTimerDisplay() {
-  timerDisplay.textContent = `Time: ${timer} seconds`;
-}
-
-function updateLivesDisplay() {
-  livesDisplay.textContent = `Lives: ${lives}`;
-}
-
-function initGame() {
-  updateScoreAndLevel();
-  updateTimerDisplay();
-  updateLivesDisplay();
-  startTimer();
-}
-
-function startTimer() {
-  const interval = setInterval(() => {
-    timer--;
-    updateTimerDisplay();
-
-    if (timer === 0) {
-      clearInterval(interval);
-      endGame();
-    }
-  }, 1000);
-}
-
-document.addEventListener('keydown', handleKeyDown);
-
-generateGameBoard();
-initGame();
+// Ensure game starts only when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded');
+  startGame();
+});
