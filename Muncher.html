@@ -1,32 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Number Munchers</title>
-    <link rel="stylesheet" href="Munchers.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Munchers</title>
+  <link rel="stylesheet" href="Munchers.css">
 </head>
 <body>
-    <div class="game-wrapper">
-        <!-- Game Header -->
-        <header class="game-header">
-            <div>Level: <span id="level">1</span></div>
-            <div>Multiples of 2</div>
-        </header>
-        
-        <!-- Game Board -->
-        <main class="game-container">
-            <div class="game-board" id="game-board">
-                <!-- Dynamic grid elements will be inserted here -->
-            </div>
-        </main>
+  <div class="game-wrapper">
+    <!-- Header -->
+    <header class="game-header">
+      <div class="game-info">Level: <span id="level">1</span></div>
+      <div class="game-goal" id="goal">Find Multiples of 2</div>
+    </header>
+    
+    <!-- Game Board -->
+    <main class="game-container">
+      <div class="game-board" id="game-board"></div>
+    </main>
 
-        <!-- Game Footer -->
-        <footer class="game-footer">
-            Score: <span id="score">30</span>
-        </footer>
-    </div>
-
-    <script src="Munchers.js"></script>
+    <!-- Footer -->
+    <footer class="game-footer">
+      <div class="game-score">Score: <span id="score">0</span></div>
+      <div class="game-lives">Lives: <span id="lives">3</span></div>
+    </footer>
+  </div>
+  <script defer src="Munchers.js"></script>
 </body>
 </html>
