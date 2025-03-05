@@ -4,27 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Number Munchers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Munchers.css">
+  <!-- Preload key sprite images for better performance -->
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Troggles/MS-DOS - Number Munchers - Troggles-105.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-0.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-1.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-2.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-3.png" as="image">
+  <link rel="preload" href="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-4.png" as="image">
+  <!-- Preload key images -->
+  <link rel="preload" as="image" href="Sprites/muncher_idle.png">
+  <link rel="preload" as="image" href="Sprites/muncher_eating.png">
 </head>
 <body>
-  <div class="game-wrapper">
-    <!-- Header -->
-    <header class="game-header">
-      <div class="game-info">Level: <span id="level">1</span></div>
-      <div class="game-goal" id="goal">Find Multiples of 2</div>
-    </header>
+  <!-- Responsive container that maintains aspect ratio -->
+  <div class="game-container-responsive">
+    <!-- Title Screen Container -->
+    <div id="title-container">
+      <!-- Initial Title Screen -->
+      <div id="title-screen-1" class="title-screen" style="display: block;">
+        <img src="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-0.png" alt="Number Munchers" class="title-image full-screen">
+        <div class="press-any-key">PRESS ANY KEY TO CONTINUE</div>
+      </div>
+      
+      <!-- Menu Title Screen -->
+      <div id="title-screen-2" class="title-screen" style="display: none;">
+        <img src="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-1.png" alt="Number Munchers Menu" class="title-image full-screen">
+        <div class="menu-highlight"></div>
+      </div>
+      
+      <!-- Hall of Fame Screen -->
+      <div id="hall-of-fame-screen" class="title-screen" style="display: none;">
+        <img src="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-2.png" alt="Hall of Fame" class="title-image full-screen">
+        <div class="press-any-key">PRESS ANY KEY TO CONTINUE</div>
+      </div>
+      
+      <!-- Information Screen -->
+      <div id="information-screen" class="title-screen" style="display: none;">
+        <img src="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-3.png" alt="Information" class="title-image full-screen">
+        <div class="press-any-key">PRESS ANY KEY TO CONTINUE</div>
+      </div>
+      
+      <!-- Options Screen -->
+      <div id="options-screen" class="title-screen" style="display: none;">
+        <img src="Sprites/MS-DOS - Number Munchers - Title Screens & Hall of Fame/MS-DOS - Number Munchers - Title Screens & Hall of Fame-4.png" alt="Options" class="title-image full-screen">
+        <div class="press-any-key">PRESS ANY KEY TO CONTINUE</div>
+      </div>
+    </div>
     
-    <!-- Game Board -->
-    <main class="game-container">
-      <div class="game-board" id="game-board"></div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="game-footer">
-      <div class="game-score">Score: <span id="score">0</span></div>
-      <div class="game-lives">Lives: <span id="lives">3</span></div>
-    </footer>
+    <!-- Game Wrapper -->
+    <div id="game-wrapper" style="display: none;">
+      <!-- Game Header -->
+      <div id="game-header">
+        <div class="level-container">
+          <span class="level-label">LEVEL:</span>
+          <span id="level-display">1</span>
+        </div>
+        <div class="goal-container">
+          <span id="goal-display">PRIME NUMBERS</span>
+        </div>
+      </div>
+      
+      <!-- Game Container -->
+      <div id="game-container">
+        <!-- Squares will be generated here by JavaScript -->
+      </div>
+      
+      <!-- Message Display -->
+      <div id="message-display" style="display: none;">
+        The number "1" is not prime.
+        <br>Press Space Bar to continue.
+      </div>
+      
+      <!-- Game Footer -->
+      <div id="game-footer">
+        <div class="score-container">
+          <span class="score-label">SCORE:</span>
+          <span id="score-display">0</span>
+        </div>
+        <div id="lives-container">
+          <!-- Life icons will be added here by JavaScript -->
+        </div>
+      </div>
+    </div>
   </div>
-  <script defer src="Munchers.js"></script>
+  
+  <script src="Munchers.js"></script>
 </body>
 </html>
