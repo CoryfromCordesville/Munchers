@@ -1,256 +1,364 @@
-/* General Styling */
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #000000;
-  font-family: 'Courier New', monospace;
-  color: #2ecc71;
+    margin: 0;
+    padding: 0;
+    background-color: #000080; /* MS-DOS blue background */
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
-.game-wrapper {
-  width: fit-content;
-  padding: 15px;
-  border: 3px solid #2ecc71;
-  border-radius: 5px;
-  background-color: #000000;
+/* Responsive container for all game elements */
+.game-container-responsive {
+    position: relative;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    transform-origin: center;
+    background-color: #000;
+    /* Set optimal dimensions for readability */
+    max-width: 960px;
+    max-height: 600px;
+    /* Add border for better definition */
+    border: 2px solid #444;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Header and Footer */
-.game-header, .game-footer {
-  background-color: #000000;
-  color: #2ecc71;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2rem;
-  border: 2px solid #2ecc71;
-  margin: 5px 0;
+/* Title screen container */
+#title-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000080;
 }
 
-.game-container {
-  margin: 15px 0;
+/* Title screens */
+.title-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Game Board and Square Styling */
-.game-board {
-  display: grid;
-  grid-template-columns: repeat(5, 60px);
-  grid-template-rows: repeat(5, 60px);
-  gap: 2px;
-  background: #000000;
-  padding: 10px;
-  border: 3px solid #2ecc71;
-  border-radius: 5px;
+.title-image.full-screen {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-/* Square Styling */
+/* Game wrapper */
+#game-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #000080; /* MS-DOS blue */
+    position: relative;
+    border: max(4px, 0.625vw) solid #FF00FF; /* Responsive border */
+    box-sizing: border-box;
+}
+
+/* Game header */
+#game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 15%;
+    background-color: #000080; /* MS-DOS blue */
+    color: white;
+    border: 3px solid white;
+    border-bottom: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 2.5vw, 18px);
+}
+
+/* White horizontal line under header */
+#game-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: max(2px, 0.3vw);
+    background-color: white;
+}
+
+/* Level display */
+.level-container, .goal-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.level-label, .score-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#level-display, #score-display {
+    background: #000080;
+    padding: 3px 8px;
+    border: 2px solid white;
+}
+
+/* Game container/board */
+#game-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 3px;
+    width: 100%;
+    height: 65%; /* Adjusted to give more space to header/footer */
+    background-color: #000080; /* MS-DOS blue */
+    border: 3px solid white;
+    border-bottom: none;
+    box-sizing: border-box;
+}
+
+/* Game squares */
 .square {
-  width: 60px;
-  height: 60px;
-  background: #111111;
-  border: 2px solid #2ecc71;
-  color: #2ecc71;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  font-family: 'Courier New', monospace;
-  font-size: 18px;
-  font-weight: bold;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(16px, 3vw, 24px);
+    text-shadow: 1px 1px 0 black;
+    border: 1px solid #FF00FF; /* Magenta grid lines */
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 5px;
 }
 
-/* Game Squares */
-.square.correct {
-  background-color: #4caf50; /* Green for correct numbers */
+/* Message display */
+#message-display {
+    position: absolute;
+    top: 40%;
+    left: 15%;
+    width: 70%;
+    padding: 15px;
+    background-color: #000080; /* MS-DOS blue */
+    color: white;
+    border: 2px solid #FF00FF; /* Magenta border */
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 2.5vw, 20px);
+    line-height: 1.5;
+    z-index: 100;
 }
 
-.square.wrong {
-  background-color: #ff0000; /* Red for incorrect numbers */
+/* Game footer */
+#game-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 15%;
+    background-color: #000080; /* MS-DOS blue */
+    color: white;
+    border: 3px solid white;
+    border-top: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 2.5vw, 18px);
 }
 
-.square[data-correct="true"] {
-  background-color: #111111;
+/* White horizontal line above footer */
+#game-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: max(2px, 0.3vw);
+    background-color: white;
 }
 
-.square[data-correct="false"] {
-  background-color: #111111;
+/* Score container */
+.score-container {
+    display: flex;
+    align-items: center;
+    border: 2px solid white;
+    padding: 5px 10px;
+    background-color: #000080;
 }
 
-.square[data-correct="true"]:hover {
-  background-color: #1a1a1a;
-  cursor: pointer;
+/* Lives container */
+#lives-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-/* Muncher Styling */
+/* Life icons (muncher sprites) */
+.life-icon {
+    width: clamp(20px, 4vw, 32px);
+    height: clamp(20px, 4vw, 32px);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png');
+}
+
+/* Muncher character */
 .muncher {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  background-image: url('sprites.png');
-  background-size: 170px 110px;
-  animation: sprite-muncher 0.5s steps(3) infinite;
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 5;
 }
 
-.muncher.eating {
-  animation: sprite-muncher 0.25s steps(3) infinite;
-}
-
-.muncher.dead {
-  background-position: -120px 0;
-  animation: none;
-}
-
-/* Enemy Styling */
-.toggle {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  background-image: url('sprites.png');
-  background-size: 160px 80px;
-  background-position: 0 -40px;
-  animation: sprite-toggle 0.5s steps(3) infinite;
-}
-
-/* Toggle Animation */
-@keyframes moveToggle {
-  0% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(20px, 0);
-  }
-  50% {
-    transform: translate(20px, 20px);
-  }
-  75% {
-    transform: translate(0, 20px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-}
-
-/* Updated Transition Effects */
-.square:hover {
-  background-color: #5e35b1; /* Highlight on hover */
-}
-
-.muncher-moving {
-  animation: none;
-}
-
-@keyframes muncherMove {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.1);
-  }
-}
-
-/* Sprite Definitions */
-:root {
-  --sprite-sheet: url('/Sprites/MS-DOS\ -\ Number\ Munchers\ -\ Muncher.png');
-  --sprite-width: 32px;  /* Actual sprite width */
-  --sprite-height: 32px; /* Actual sprite height */
-  --animation-duration: 0.5s;
-}
-
-/* Sprite Animations */
-@keyframes idle {
-  0% { background-position: 0 0; }
-  33% { background-position: -32px 0; }
-  66% { background-position: -64px 0; }
-  100% { background-position: -96px 0; }
-}
-
-@keyframes eating {
-  0% { background-position: 0 -32px; }
-  33% { background-position: -32px -32px; }
-  66% { background-position: -64px -32px; }
-  100% { background-position: -96px -32px; }
-}
-
-@keyframes death {
-  0% { background-position: 0 -64px; }
-  33% { background-position: -32px -64px; }
-  66% { background-position: -64px -64px; }
-  100% { background-position: -96px -64px; }
-}
-
-@keyframes toggle-move {
-  0% { background-position: 0 -96px; }
-  33% { background-position: -32px -96px; }
-  66% { background-position: -64px -96px; }
-  100% { background-position: -96px -96px; }
-}
-
-@keyframes sprite-muncher {
-  from { background-position: 0px 0px; }
-  to { background-position: -120px 0px; }
-}
-
-@keyframes sprite-toggle {
-  from { background-position: 0px -40px; }
-  to { background-position: -120px -40px; }
-}
-
-/* Muncher States */
-.muncher {
-  width: var(--sprite-width);
-  height: var(--sprite-height);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  background-image: var(--sprite-sheet);
-  background-repeat: no-repeat;
-  image-rendering: pixelated;
-  background-size: calc(var(--sprite-width) * var(--frame-count)) var(--sprite-height);
-  background-position: 0 0;
-}
-
+/* Muncher states */
 .muncher.idle {
-  animation: idle var(--animation-duration) steps(3) infinite;
+    background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png');
 }
 
 .muncher.eating {
-  animation: eating var(--animation-duration) steps(3) infinite;
+    animation: eating 0.5s steps(4) forwards;
 }
 
-.muncher.dead {
-  animation: death var(--animation-duration) steps(3);
-  animation-fill-mode: forwards;
+.muncher.wrong-eat {
+    animation: wrong-eat 1s steps(4) forwards;
 }
 
-/* Toggle Enemy */
-.toggle {
-  width: var(--sprite-width);
-  height: var(--sprite-height);
-  position: absolute;
-  background-image: var(--sprite-sheet);
-  background-repeat: no-repeat;
-  animation: toggle-move var(--animation-duration) steps(3) infinite;
-  image-rendering: pixelated;
+.muncher.moving {
+    animation: moving 0.3s steps(4) forwards;
 }
 
-/* Toggle Enemy Styling */
-.toggle {
-  width: var(--sprite-width);
-  height: var(--sprite-height);
-  position: absolute;
-  background-image: var(--sprite-sheet);
-  background-repeat: no-repeat;
-  background-position: 0 calc(var(--sprite-height) * -3); /* Adjust based on sprite sheet */
-  animation: toggle-move var(--animation-duration) steps(4) infinite;
-  image-rendering: pixelated;
+/* Animations */
+@keyframes eating {
+    0% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png'); }
+    25% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-1.png'); }
+    50% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-2.png'); }
+    75% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-3.png'); }
+    100% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png'); }
+}
+
+@keyframes wrong-eat {
+    0% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png'); }
+    25% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-4.png'); }
+    50% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-5.png'); }
+    75% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-6.png'); }
+    100% { opacity: 0; }
+}
+
+@keyframes moving {
+    0% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png'); }
+    25% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-7.png'); }
+    50% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-8.png'); }
+    75% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-9.png'); }
+    100% { background-image: url('Sprites/MS-DOS - Number Munchers - Muncher/MS-DOS - Number Munchers - Muncher-0.png'); }
+}
+
+/* Menu highlight - positioned relative to menu frame */
+.menu-highlight {
+    position: absolute;
+    width: 65%;
+    height: 5%; /* Reduced height to better fit menu text */
+    background-color: rgba(255, 255, 0, 0.3); /* More transparent yellow */
+    left: 17.5%;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* More subtle border */
+    animation: menu-pulse 1.5s infinite;
+}
+
+@keyframes menu-pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0.3; }
+}
+
+/* Name entry screen */
+.name-entry-overlay {
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 2vw, 16px);
+}
+
+.name-display {
+    display: flex;
+    justify-content: space-between;
+    width: 15%;
+}
+
+.highlighted-char {
+    color: black;
+    background-color: white;
+    animation: blink 1s infinite;
+}
+
+.name-instructions {
+    color: white;
+    font-size: clamp(10px, 1.8vw, 14px);
+}
+
+.score-display-hof {
+    color: white;
+    font-size: clamp(12px, 2vw, 16px);
+}
+
+/* Blinking text effect */
+.blink-text {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Press any key to continue */
+.press-any-key {
+    position: absolute;
+    bottom: 20%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 2.2vw, 18px);
+    animation: blink 1s infinite;
+}
+
+/* Media queries to maintain aspect ratio */
+@media (max-aspect-ratio: 16/10) {
+    .game-container-responsive {
+        width: 85vw; /* Slightly reduced for better margin */
+        height: calc(85vw * (10/16));
+        max-height: 85vh;
+    }
+}
+
+@media (min-aspect-ratio: 16/10) {
+    .game-container-responsive {
+        height: 85vh; /* Slightly reduced for better margin */
+        width: calc(85vh * (16/10));
+        max-width: 85vw;
+    }
 }
